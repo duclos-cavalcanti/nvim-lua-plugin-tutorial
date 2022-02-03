@@ -1,5 +1,10 @@
-local Window = require("window")
-local utils = require("utils")
+local Window = require("tutorial.window")
+local utils = require("tutorial.utils")
+
+local log = require("plenary.log").new({
+    plugin = "tutorial",
+    level = "warn",
+})
 
 local pos
 local win, bWin
@@ -9,14 +14,14 @@ local function setBorderWindowCloseHook()
 end
 
 local function createBorderLines()
-    local lines = { '╔' .. string.rep('═', bWin.width) .. '╗' }
-    local middle = '║' .. string.rep(' ', bWin.width) .. '║'
+    local lines = { '╔' .. string.rep('═', bWin.opts.width) .. '╗' }
+    local middle = '║' .. string.rep(' ', bWin.opts.width) .. '║'
 
-    for _=1, bWin.height do
+    for _=1, bWin.opts.height do
         table.insert(lines, middle)
     end
 
-    table.insert(lines, '╚' .. string.rep('═', bWin.width) .. '╝')
+    table.insert(lines, '╚' .. string.rep('═', bWin.opts.width) .. '╝')
 
     bWin:setBufferLines({
         start = 0, 
@@ -43,7 +48,7 @@ local function createBorderWindow()
     end
     )
 
-    win:setWindowCoordinates(
+    bWin:setWindowCoordinates(
     function(ww, wh)
         local w = vim.api.nvim_get_option("columns")
         local h = vim.api.nvim_get_option("lines")
@@ -55,8 +60,8 @@ local function createBorderWindow()
     end
     )
 
-    createBorderLines(bWin)
-    setBorderWindowCloseHook(bWin)
+    createBorderLines()
+    setBorderWindowCloseHook()
 end
 
 local function createWindow()
@@ -153,16 +158,16 @@ local function updateWindow(dir)
         ns_id = -1,
         hl_group = "tutorialHeader",
         line = 0,
-        start_col = 0,
-        end_col = -1,
+        col_start = 0,
+        col_end = -1,
     })
 
     win:addBufferHI({
         ns_id = -1,
         hl_group = "tutorialSubHeader",
         line = 1,
-        start_col = 0,
-        end_col = -1,
+        col_start = 0,
+        col_end = -1,
     })
 
     win:setBufferOption({name = 'modifiable', value = true})

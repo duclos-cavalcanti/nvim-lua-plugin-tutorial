@@ -68,7 +68,7 @@ function Window:setWindowCoordinates(f)
     if type(f) ~= "function" then
         error "Needs a function to apply on window dimensions!"
     end
-    self.opts.row, self.opts.col = f(self.width, self.height)
+    self.opts.row, self.opts.col = f(self.opts.width, self.opts.height)
 end
 
 function Window:setWindowOption(opts)

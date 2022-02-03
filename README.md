@@ -1,20 +1,18 @@
-# Lua Project Template
+# Nvim Plugin Tutorial
 
 # 1. Introduction
-Boilerplate folder structure for `lua` projects.
+A learning experience to attempt to create a simple lua plugin for `nvim`. Tutorial and
+the great work/explanation can be found [here](https://dev.to/2nit/how-to-write-neovim-plugins-in-lua-5cca)!
 
-# 2. Dependencies
+# Development
+
+## Dependencies
 1. `Lua`
 2. `luarocks`
 3. `luacheck`
 4. `stylua`
 
-## 2.1 Debian
-```sh
-# TODO
-```
-
-## 2.2 Arch
+### Arch
 ```sh
 sudo pacman -S lua luarocks
 sudo luarocks install luacheck
@@ -22,7 +20,7 @@ cargo install stylua # needs rust installed
 paru -S stylua       # or available at the AUR
 ```
 
-# 3. Getting Started
+## Getting Started
 1. Run
 ```sh
 make
