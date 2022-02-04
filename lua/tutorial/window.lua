@@ -89,7 +89,7 @@ function Window:open(enter)
 end
 
 function Window:close(enter)
-    vim.api.nvim_win_close(self.win, true)
+    vim.api.nvim_win_close(self.win, false)
 end
 
 return Window

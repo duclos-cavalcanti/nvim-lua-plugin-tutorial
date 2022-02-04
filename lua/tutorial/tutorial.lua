@@ -1,27 +1,28 @@
 local Window = require("tutorial.window")
 local utils = require("tutorial.utils")
+local Log = require("tutorial.lib.log")
 
-local log = require("plenary.log").new({
-    plugin = "tutorial",
-    level = "warn",
-})
+-- l = Log:new("~/Documents/projects/langs/lua/Lua-Project-Template/tutorial", "debug")
+-- l:start()
+-- l:trace("bWindow H", string.format("%d", bWin.opts.height))
+-- l:dump()
 
 local pos
 local win, bWin
 
 local function setBorderWindowCloseHook()
-    vim.api.nvim_command('au BufWipeout <buffer> exe "silent bwipeout! "' .. bWin.buf)
+    vim.api.nvim_command('au BufWipeout <buffer> exe "silent bwipeout! "'..bWin.buf)
 end
 
 local function createBorderLines()
-    local lines = { '╔' .. string.rep('═', bWin.opts.width) .. '╗' }
-    local middle = '║' .. string.rep(' ', bWin.opts.width) .. '║'
+    local lines = { '╔' .. string.rep('═', win.opts.width) .. '╗' }
+    local middle = '║' .. string.rep(' ', win.opts.width) .. '║'
 
-    for _=1, bWin.opts.height do
+    for _=1, win.opts.height do
         table.insert(lines, middle)
     end
 
-    table.insert(lines, '╚' .. string.rep('═', bWin.opts.width) .. '╝')
+    table.insert(lines, '╚' .. string.rep('═', win.opts.width) .. '╝')
 
     bWin:setBufferLines({
         start = 0, 
@@ -41,8 +42,8 @@ local function createBorderWindow()
         local w = vim.api.nvim_get_option("columns")
         local h = vim.api.nvim_get_option("lines")
 
-        local ret_w = math.ceil(h * 0.8 - 4)
-        local ret_h = math.ceil(w * 0.8)
+        local ret_h = math.ceil(h * 0.8 - 4)
+        local ret_w = math.ceil(w * 0.8)
 
         return ret_w + 2, ret_h + 2
     end
@@ -56,12 +57,11 @@ local function createBorderWindow()
         local ret_row = math.ceil((h - wh) / 2 - 1)
         local ret_col = math.ceil((w - ww) / 2)
 
-        return ret_row - 1, ret_col - 1
+        return ret_row, ret_col
     end
     )
 
     createBorderLines()
-    setBorderWindowCloseHook()
 end
 
 local function createWindow()
@@ -77,8 +77,8 @@ local function createWindow()
         local w = vim.api.nvim_get_option("columns")
         local h = vim.api.nvim_get_option("lines")
 
-        local ret_w = math.ceil(h * 0.8 - 4)
-        local ret_h = math.ceil(w * 0.8)
+        local ret_h = math.ceil(h * 0.8 - 4)
+        local ret_w = math.ceil(w * 0.8)
 
         return ret_w, ret_h
     end
@@ -101,10 +101,18 @@ local function openWindow()
     createWindow()
     createBorderWindow()
 
-    bWin:open()
-    win:open()
+    bWin:open(true)
+    win:open(true)
 
     win:setWindowOption({name='cursorline', value=true})
+    setBorderWindowCloseHook()
+
+    win:setBufferLines({
+        start = 0, 
+        finish = -1, 
+        strict_indexing = false, 
+        replacement = { utils.centralizeText('Centralized Text?'), '', ''}
+    })
 end
 
 local function fetchData()
@@ -179,13 +187,13 @@ end
 
 local function setWindowMappings()
     local mappings = {
-        ['['] = 'updateWindow(-1)',
-        [']'] = 'updateWindow(1)',
-        ['<cr>'] = 'openFile()',
-        h = 'updateWindow(-1)',
-        l = 'updateWindow(1)',
-        q = 'closeWindow()',
-        k = 'moveCursor()'
+        ['['] = 'update(-1)',
+        [']'] = 'update(1)',
+        ['<cr>'] = 'open_file()',
+        h = 'update(-1)',
+        l = 'update(1)',
+        q = 'close()',
+        k = 'move_cursor()'
     }
 
     local function setMapping(lhs, rhs)
@@ -228,6 +236,6 @@ return {
     start = start,
     update = updateWindow,
     open_file = openFile,
-    move = moveCursor,
+    move_cursor = moveCursor,
     close = closeWindow,
 }
