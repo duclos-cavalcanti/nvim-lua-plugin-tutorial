@@ -11,7 +11,7 @@ local pos
 local win, bWin
 
 local function setBorderWindowCloseHook()
-    vim.api.nvim_command('au BufWipeout <buffer> exe "silent bwipeout! "'..bWin.buf)
+    vim.api.nvim_command('au BufWipeout <buffer> exe "silent bwipeout! "' .. bWin.buf)
 end
 
 local function createBorderLines()
@@ -196,12 +196,13 @@ local function setWindowMappings()
         k = 'move_cursor()'
     }
 
-    local function setMapping(lhs, rhs)
+    local function setMapping(lhs, rhs, extra_opts)
+        extra_opts = extra_opts or {nowait = true, noremap = true, silent = true}
         local opts = {
             mode = 'n',
             lhs = lhs,
             rhs = rhs,
-            extra_opts = {nowait = true, noremap = true, silent = true},
+            extra_opts = extra_opts,
         }
         win:setBufferMapping(opts)
     end
@@ -210,6 +211,19 @@ local function setWindowMappings()
         local lhs = k
         local rhs = ':lua require"tutorial.tutorial".' .. v .. '<cr>'
         setMapping(lhs, rhs)
+    end
+
+    local other_chars = {
+      'a', 'b', 'c', 'd', 'e', 
+      'f', 'g', 'i', 'n', 'o', 
+      'p', 'r', 's', 't', 'u', 
+      'v', 'w', 'x', 'y', 'z'
+    }
+
+    for _,v in ipairs(other_chars) do
+        setMapping(v, '')
+        setMapping(v:upper(), '')
+        setMapping('<c-' .. v .. '>', '')
     end
 end
 
